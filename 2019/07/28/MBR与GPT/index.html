@@ -1,0 +1,424 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="MBR与GPT"><meta name="keywords" content="MBR,GPT,分区表"><meta name="author" content="MK"><meta name="copyright" content="MK"><title>MBR与GPT | MK's start</title><link rel="shortcut icon" href="/image/favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script><link rel="dns-prefetch" href="https://hm.baidu.com"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cae699147c4ac04308a32b867d0c5a88";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MBR分区"><span class="toc-number">1.</span> <span class="toc-text">MBR分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#引导代码"><span class="toc-number">1.1.</span> <span class="toc-text">引导代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分区表"><span class="toc-number">1.2.</span> <span class="toc-text">分区表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结束标志"><span class="toc-number">1.3.</span> <span class="toc-text">结束标志</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GPT分区"><span class="toc-number">2.</span> <span class="toc-text">GPT分区</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#MBR分区的缺点"><span class="toc-number">2.1.</span> <span class="toc-text">MBR分区的缺点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GPT分区的优点"><span class="toc-number">2.2.</span> <span class="toc-text">GPT分区的优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GPT分区表的结构"><span class="toc-number">2.3.</span> <span class="toc-text">GPT分区表的结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#LBA"><span class="toc-number">2.3.1.</span> <span class="toc-text">LBA</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LBA-0"><span class="toc-number">2.3.2.</span> <span class="toc-text">LBA 0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LBA-1"><span class="toc-number">2.3.3.</span> <span class="toc-text">LBA 1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LBA-2–33"><span class="toc-number">2.3.4.</span> <span class="toc-text">LBA 2–33</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#分区类型"><span class="toc-number">2.3.4.1.</span> <span class="toc-text">分区类型</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#分区属性"><span class="toc-number">2.3.4.2.</span> <span class="toc-text">分区属性</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-number">3.</span> <span class="toc-text">参考</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/image/avatar.jpg"></div><div class="author-info__name text-center">MK</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">5</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">7</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MK's start</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a></span></div><div id="post-info"><div id="post-title">MBR与GPT</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-28</time><div class="post-meta-wordcount"><span>字数总计: </span><span class="word-count">3.1k</span><span class="post-meta__separator">|</span><span>阅读时长: 10 分钟</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>最近在折腾ns上安装安卓与Ubuntu，遇到了很多和分区表有关的问题，整理一波。</p>
+<h2 id="MBR分区"><a href="#MBR分区" class="headerlink" title="MBR分区"></a>MBR分区</h2><p>MBR（Main Boot Record 主引导记录区）位于整个硬盘的0磁道0柱面1扇区。在512字节的主引导扇区中，MBR只占用了其中的446个字节，另外的64个字节交给了 DPT（Disk Partition Table硬盘分区表），最后两个字节“55，AA”是分区的结束标志。这个整体构成了硬盘的主引导扇区。</p>
+<p><img src="/.com//git\pic\blog\MBR.png" alt></p>
+<p>这里是一个sd卡的主引导扇区</p>
+<h3 id="引导代码"><a href="#引导代码" class="headerlink" title="引导代码"></a>引导代码</h3><p>上图中黑色框内的部分即为引导程序，占扇区前446字节。计算机在上电完成BIOS自检后，会将该主引导扇区加载到内存中并执行前面446字节的引导程序，引导程序首先会在分区表中查找活动分区，若存在活动分区，则根据活动分区的偏移量找到该活动分区上的引导扇区的地址，并将该引导扇区加载到内存中，同时检查该引导扇区的有效性，然后根据该引导扇区的规则去引导操作系统。在一些非启动磁盘上，MBR引导代码可能都是0，这对磁盘使用没有任何影响。</p>
+<p>更详的反汇编后的程序解读可以看这篇<a href="https://blog.csdn.net/li740207611/article/details/51971235" target="_blank" rel="noopener">《反汇编mbr》</a>。</p>
+<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><p>上图中红色框内的部分即为分区表，占扇区中间64字节。分区表是磁盘管理最重要的部分，通过分区表信息来定位各个分区，访问用户数据。分区表包含4个分区项，每一个分区项通过位置偏移、分区大小来唯一确定一个主分区或者扩展分区。每个分区项占16字节，包括引导标识、起始和结束位置的CHS参数、分区类型、开始扇区、分区大小等。</p>
+<p>这里需要注意的是，分区项的第1个字节表示该分区是否是活动分区，即是否包含系统引导扇区，用来引导操作系统。每个磁盘只能同时有一个活动分区，活动分区的引导指示符是0x80，其他均为0x00；尽管我们可以通过一些工具来手动修改引导指示符，但是引导程序只会查找并使用第一个引导指示符为0x80的活动分区。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>偏移</th>
+<th>字节数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00H</td>
+<td>1</td>
+<td>分区状态：00表示非活动分区；80表示活动分区，只有这两种数值</td>
+</tr>
+<tr>
+<td>01H</td>
+<td>1</td>
+<td>分区起始磁头号</td>
+</tr>
+<tr>
+<td>02H</td>
+<td>2</td>
+<td>分区起始位置。02H的0-5位，扇区号；02H的6-7位和03H的全部8位，磁柱号。</td>
+</tr>
+<tr>
+<td>04H</td>
+<td>1</td>
+<td>文件系统的类型标志</td>
+</tr>
+<tr>
+<td>05H</td>
+<td>1</td>
+<td>分区结束磁头号</td>
+</tr>
+<tr>
+<td>06H</td>
+<td>2</td>
+<td>分区结束位置。06H的0-5位，扇区号；06H的6-7位和07H的全部8位，磁柱号。</td>
+</tr>
+<tr>
+<td>08H</td>
+<td>4</td>
+<td>起始扇区号</td>
+</tr>
+<tr>
+<td>0CH</td>
+<td>4</td>
+<td>总扇区数</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="结束标志"><a href="#结束标志" class="headerlink" title="结束标志"></a>结束标志</h3><p>上图中最后的”55 AA”即为结束标志，或者称魔数，占扇区最后2字节。每次执行系统引导代码时都会检查MBR主引导扇区最后2字节是否是”55 AA”，若是，则继续执行后续的程序，否则，则认为这是一个无效的MBR引导扇区，停止引导系统。</p>
+<h2 id="GPT分区"><a href="#GPT分区" class="headerlink" title="GPT分区"></a>GPT分区</h2><h3 id="MBR分区的缺点"><a href="#MBR分区的缺点" class="headerlink" title="MBR分区的缺点"></a>MBR分区的缺点</h3><p>前面已经提到了MBR分区的主分区数目不能超过4个的限制，这是其一，很多时候，4个主分区并不能满足需要。另外最关键的是MBR分区方案无法支持超过2TB容量的磁盘。因为这一方案用4个字节存储分区的总扇区数，最大能表示2的32次方的扇区个数，按每扇区512字节计算，每个分区最大不能超过2TB。磁盘容量超过2TB以后，分区的起始位置也就无法表示了。</p>
+<p>因此GUID分区表(简称GPT)就应运而生了。</p>
+<h3 id="GPT分区的优点"><a href="#GPT分区的优点" class="headerlink" title="GPT分区的优点"></a>GPT分区的优点</h3><p>GPT是源自EFI标准的一种较新的磁盘分区表结构的标准。与目前普遍使用的主引导记录(MBR)分区方案相比，GPT提供了更加灵活的磁盘分区机制。它具有如下优点：</p>
+<ol>
+<li><p>支持2TB以上的大硬盘。</p>
+</li>
+<li><p>每个磁盘的分区个数几乎没有限制（Windows系统最多只允许划分128个分区）。</p>
+</li>
+<li><p>分区大小几乎没有限制。又是一个“几乎”。因为它用64位的整数表示扇区号，即  = 18,446,744,073,709,551,616。</p>
+</li>
+<li><p>分区表自带备份。在磁盘的首尾部分分别保存了一份相同的分区表，其中一份被破坏后，可以通过另一份恢复；</p>
+</li>
+<li><p>循环冗余检验值针对关键数据结构而计算，提高了数据崩溃的检测几率；</p>
+</li>
+<li><p>虽然MBR提供1字节分区类型代码，但GPT使用一个16字节的全局唯一标识符（GUID）值来标识分区类型，这使分区类型更不容易冲突；</p>
+</li>
+<li><p>每个分区可以有一个名称(不同于卷标)。 </p>
+</li>
+</ol>
+<h3 id="GPT分区表的结构"><a href="#GPT分区表的结构" class="headerlink" title="GPT分区表的结构"></a>GPT分区表的结构</h3><p><img src="/.com//hexo\source\image\GPT结构.png" alt></p>
+<h4 id="LBA"><a href="#LBA" class="headerlink" title="LBA"></a>LBA</h4><p>中文名称：逻辑区块地址。是描述电脑存储设备上数据所在区块的通用机制，一般用在像硬盘这样的辅助记忆设备。我们俗称扇区。</p>
+<h4 id="LBA-0"><a href="#LBA-0" class="headerlink" title="LBA 0"></a>LBA 0</h4><p>在GPT分区表的最开头，处于兼容性考虑仍然存储了一份传统的MBR（LBA 0），这个MBR叫做保护性MBR（Protective MBR）。</p>
+<p>保护性MBR保护GPT磁盘不受以前发布的MBR磁盘工具的危害。这些工具不能感知GPT，也无法正确地访问GPT磁盘。这些工具通过解释保护性MBR，将GPT磁盘看成一个封装的（可能无法识别）分区，而不是错误地当成一个未分区的磁盘，并且拒绝对硬盘进行操作。这就避免了意外删除分区的危险。</p>
+<p>在支持从GPT启动的操作系统中，这里也用于存储第一阶段的启动代码。在这个MBR中，只有一个标识为0xEE的分区，以此来表示这块硬盘使用GPT分区表。</p>
+<p>在使用MBR/GPT混合分区表的硬盘中，这部分存储了GPT分区表的一部分分区（通常是前四个分区），可以使不支持从GPT启动的操作系统从这个MBR启动，启动后只能操作MBR分区表中的分区。</p>
+<h4 id="LBA-1"><a href="#LBA-1" class="headerlink" title="LBA 1"></a>LBA 1</h4><p>分区表头（LBA 1）定义了硬盘的可用空间以及组成分区表的项的大小和数量。在使用64位Windows Server 2003的机器上，最多可以创建128个分区，即分区表中保留了128个项，其中每个都是128字节。（EFI标准要求分区表最小要有16,384字节，即128个分区项的大小）</p>
+<p>分区表头还记录了这块硬盘的GUID，记录了分区表头本身的位置和大小以及备份分区表头和分区表的位置和大小（在硬盘的最后）。它还储存着它本身和分区表的CRC32校验。固件、引导程序和操作系统在启动时可以根据这个校验值来判断分区表是否出错，如果出错了，可以使用软件从硬盘最后的备份GPT中恢复整个分区表，如果备份GPT也校验错误，硬盘将不可使用。以下是分区表头结构的具体信息：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>相对字节偏移量</th>
+<th>字节数</th>
+<th>说明[整数皆以little endian方式表示]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00～07</td>
+<td>8</td>
+<td>GPT头签名“45 46 49 20 50 41 52 54”(ASCII码为“EFI PART”)</td>
+</tr>
+<tr>
+<td>08～0B</td>
+<td>4</td>
+<td>版本号，目前是1.0版，其值是“00 00 01 00”</td>
+</tr>
+<tr>
+<td>0C～0F</td>
+<td>4</td>
+<td>GPT头的大小(字节数)，通常为“5C 00 00 00”(0x5C)，也就是92字节。</td>
+</tr>
+<tr>
+<td>10～13</td>
+<td>4</td>
+<td>GPT头CRC校验和(计算时把这个字段本身看做零值)</td>
+</tr>
+<tr>
+<td>14～17</td>
+<td>4</td>
+<td>保留，必须为“00 00 00 00”</td>
+</tr>
+<tr>
+<td>18～1F</td>
+<td>8</td>
+<td>EFI信息区(GPT头)的起始扇区号，通常为“01 00 00 00 00 00 00 00”，也就是LBA1。</td>
+</tr>
+<tr>
+<td>20～27</td>
+<td>8</td>
+<td>EFI信息区(GPT头)备份位置的扇区号，也就是EFI区域结束扇区号。通常是整个磁盘最末一个扇区。</td>
+</tr>
+<tr>
+<td>28～2F</td>
+<td>8</td>
+<td>GPT分区区域的起始扇区号，通常为“22 00 00 00 00 00 00 00”(0x22)，也即是LBA34。</td>
+</tr>
+<tr>
+<td>30～37</td>
+<td>8</td>
+<td>GPT分区区域的结束扇区号，通常是倒数第34扇区。</td>
+</tr>
+<tr>
+<td>38～47</td>
+<td>16</td>
+<td>磁盘GUID(全球唯一标识符,与UUID是同义词)</td>
+</tr>
+<tr>
+<td>48～4F</td>
+<td>8</td>
+<td>分区表起始扇区号，通常为“02 00 00 00 00 00 00 00”(0x02)，也就是LBA2。</td>
+</tr>
+<tr>
+<td>50～53</td>
+<td>4</td>
+<td>分区表总项数，通常限定为“80 00 00 00”(0x80)，也就是128个。</td>
+</tr>
+<tr>
+<td>54～57</td>
+<td>4</td>
+<td>每个分区表项占用字节数，通常限定为“80 00 00 00”(0x80)，也就是128字节。</td>
+</tr>
+<tr>
+<td>58～5B</td>
+<td>4</td>
+<td>分区表CRC校验和</td>
+</tr>
+<tr>
+<td>5C～*</td>
+<td>*</td>
+<td>保留，通常是全零填充</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h4 id="LBA-2–33"><a href="#LBA-2–33" class="headerlink" title="LBA 2–33"></a>LBA 2–33</h4><p>LBA 2–33的位置存放的是分区表项。GPT分区表使用简单而直接的方式表示分区。一个分区表项的前16字节是分区类型GUID。接下来的16字节是该分区唯一的GUID（这个GUID指的是该分区本身，而之前的GUID指的是该分区的类型）。再接下来是分区起始和末尾的64位LBA编号，以及分区的名字和属性。</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>相对字节偏移量 (十六进制)</th>
+<th>字节数</th>
+<th>说明[整数皆以little endian方式表示]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>00～0F</td>
+<td>16</td>
+<td>用GUID表示的分区类型</td>
+</tr>
+<tr>
+<td>10～1F</td>
+<td>16</td>
+<td>用GUID表示的分区唯一标示符</td>
+</tr>
+<tr>
+<td>20～27</td>
+<td>8</td>
+<td>该分区的起始扇区，用LBA值表示。</td>
+</tr>
+<tr>
+<td>28～2F</td>
+<td>8</td>
+<td>该分区的结束扇区(包含)，用LBA值表示，通常是奇数。</td>
+</tr>
+<tr>
+<td>30～37</td>
+<td>8</td>
+<td>该分区的属性标志</td>
+</tr>
+<tr>
+<td>38～7F</td>
+<td>72</td>
+<td>UTF-16LE编码的人类可读的分区名称，最大32个字符。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="分区类型"><a href="#分区类型" class="headerlink" title="分区类型"></a>分区类型</h5><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>相关操作系统</th>
+<th>GUID[little endian]</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>None</td>
+<td>00000000-0000-0000-0000-000000000000</td>
+<td>未使用</td>
+</tr>
+<tr>
+<td>None</td>
+<td>024DEE41-33E7-11D3-9D69-0008C781F39F</td>
+<td>MBR分区表</td>
+</tr>
+<tr>
+<td>None</td>
+<td>C12A7328-F81F-11D2-BA4B-00A0C93EC93B</td>
+<td>EFI系统分区[EFI System partition (ESP)]，必须是VFAT格式</td>
+</tr>
+<tr>
+<td>None</td>
+<td>BC13C2FF-59E6-4262-A352-B275FD6F7172</td>
+<td>扩展boot分区，必须是VFAT格式</td>
+</tr>
+<tr>
+<td>None</td>
+<td>21686148-6449-6E6F-744E-656564454649</td>
+<td>BIOS引导分区，其对应的ASCII字符串是”Hah!IdontNeedEFI”。</td>
+</tr>
+<tr>
+<td>None</td>
+<td>D3BFE2DE-3DAF-11DF-BA40-E3A556D89593</td>
+<td>Intel Fast Flash (iFFS) partition (for Intel Rapid Start technology)</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>E3C9E316-0B5C-4DB8-817D-F92DF00215AE</td>
+<td>微软保留分区</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>EBD0A0A2-B9E5-4433-87C0-68B6B72699C7</td>
+<td>基本数据分区</td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>DE94BBA4-06D1-4D40-A16A-BFD50179D6AC</td>
+<td>Windows恢复环境</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>0FC63DAF-8483-4772-8E79-3D69D8477DE4</td>
+<td>数据分区。Linux曾经使用和Windows基本数据分区相同的GUID。 这个新的GUID是由 GPT fdisk 和 GNU Parted 开发者根据Linux传统的”8300”分区代码发明的。</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>44479540-F297-41B2-9AF7-D131D5F0458A</td>
+<td>x86根分区 (/) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709</td>
+<td>x86-64根分区 (/) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>69DAD710-2CE4-4E3C-B16C-21A1D49ABED3</td>
+<td>ARM32根分区 (/) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>B921B045-1DF0-41C3-AF44-4C6F280D3FAE</td>
+<td>AArch64根分区 (/) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>3B8F8425-20E0-4F3B-907F-1A25A76F98E8</td>
+<td>服务器数据分区(/srv) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>933AC7E1-2EB4-4F13-B844-0E14E2AEF915</td>
+<td>HOME分区 (/home) 这是systemd的发明，可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>0657FD6D-A4AB-43C4-84E5-0933C84B4F4F</td>
+<td>交换分区(swap) 不是systemd的发明，但同样可用于无fstab时的自动挂载</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>A19D880F-05FC-4D3B-A006-743F0F84911E</td>
+<td>RAID分区</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>E6D6D379-F507-44C2-A23C-238F2A3DF928</td>
+<td>逻辑卷管理器(LVM)分区</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>8DA63339-0007-60C0-C436-083AC8230908</td>
+<td>保留</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h5 id="分区属性"><a href="#分区属性" class="headerlink" title="分区属性"></a>分区属性</h5><p>Microsoft还进一步对分区的属性进行了细分：低位4字节表示与分区类型无关的属性，高位4字节表示与分区类型有关的属性。Microsoft目前使用了下列属性：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Bit</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>系统分区(磁盘分区工具必须将此分区保持原样，不得做任何修改)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EFI隐藏分区(EFI不可见分区)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>传统的BIOS的可引导分区标志</td>
+</tr>
+<tr>
+<td>60</td>
+<td>只读</td>
+</tr>
+<tr>
+<td>62</td>
+<td>隐藏</td>
+</tr>
+<tr>
+<td>63</td>
+<td>不自动挂载，也就是不自动分配盘符</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://www.jinbuguo.com/storage/gpt.html" target="_blank" rel="noopener">GPT 分区详解</a></p>
+<p><a href="https://blog.csdn.net/li33293884/article/details/50562527" target="_blank" rel="noopener">GPT分区表详解</a></p>
+<p><a href="https://blog.csdn.net/zt_xcyk/article/details/53669383" target="_blank" rel="noopener">MBR分区表详解</a></p>
+</div></article><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/MBR/">MBR</a><a class="post-meta__tags" href="/tags/GPT/">GPT</a><a class="post-meta__tags" href="/tags/分区表/">分区表</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2019/07/25/java并发编程学习笔记（一）/"><span>java并发编程学习笔记（一）</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e94bf9b4e03a31e9bc6f',
+  clientSecret: '3b7cc7b3904a5506d84eb94dac8e7198084f8765',
+  repo: 'mk014.github.io',
+  owner: 'mk014',
+  admin: 'mk014',
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN'
+})
+gitalk.render('gitalk-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2019 By MK</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  CommonHTML: {
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "HTML-CSS": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "SVG": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  }
+});
+</script><script type="text/x-mathjax-config">MathJax.Hub.Queue(function() {
+  var all = MathJax.Hub.getAllJax(), i;
+  for (i=0; i < all.length; i += 1) {
+    all[i].SourceElement().parentNode.className += ' has-jax';
+  }
+});
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/Epsilon2.1.model.json"},"display":{"superSample":2,"width":210,"height":420,"position":"right","hOffset":0,"vOffset":-20},"log":false,"tagMode":false});</script></body></html>
