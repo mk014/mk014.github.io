@@ -1,0 +1,106 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="switch虚拟系统与安卓系统共存教程"><meta name="keywords" content="switch"><meta name="author" content="MK"><meta name="copyright" content="MK"><title>switch虚拟系统与安卓系统共存教程 | MK's start</title><link rel="shortcut icon" href="/image/favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css"><script src="https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js"></script><script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script><link rel="dns-prefetch" href="https://hm.baidu.com"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?cae699147c4ac04308a32b867d0c5a88";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前提条件"><span class="toc-number">1.</span> <span class="toc-text">前提条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#备份"><span class="toc-number">2.</span> <span class="toc-text">备份</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#准备工具"><span class="toc-number">3.</span> <span class="toc-text">准备工具</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#制作或移动虚拟系统"><span class="toc-number">4.</span> <span class="toc-text">制作或移动虚拟系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分区"><span class="toc-number">4.1.</span> <span class="toc-text">分区</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#向sd卡中放入Kosmos文件"><span class="toc-number">4.2.</span> <span class="toc-text">向sd卡中放入Kosmos文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写入安卓镜像"><span class="toc-number">5.</span> <span class="toc-text">写入安卓镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载镜像文件"><span class="toc-number">5.1.</span> <span class="toc-text">下载镜像文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建虚拟硬盘"><span class="toc-number">5.2.</span> <span class="toc-text">创建虚拟硬盘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写入镜像"><span class="toc-number">5.3.</span> <span class="toc-text">写入镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#https-raw-githubusercontent-com-mk014-pic-master-blog-Eassos-PartitionGuru，选择工具，扇区复制。"><span class="toc-number">5.4.</span> <span class="toc-text">https://raw.githubusercontent.com/mk014/pic/master/blog/Eassos PartitionGuru，选择工具，扇区复制。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改分区表"><span class="toc-number">5.5.</span> <span class="toc-text">修改分区表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开机，折腾"><span class="toc-number">5.6.</span> <span class="toc-text">开机，折腾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#完工"><span class="toc-number">6.</span> <span class="toc-text">完工</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/image/avatar.jpg"></div><div class="author-info__name text-center">MK</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">6</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">8</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">MK's start</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">Home</a><a class="site-page" href="/archives">Archives</a><a class="site-page" href="/tags">Tags</a></span></div><div id="post-info"><div id="post-title">switch虚拟系统与安卓系统共存教程</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-07-29</time><div class="post-meta-wordcount"><span>字数总计: </span><span class="word-count">938</span><span class="post-meta__separator">|</span><span>阅读时长: 3 分钟</span></div></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><ul>
+<li>对大气层的虚拟系统的安装非常了解</li>
+<li>现在你的SD上Fat分区（存放破解文件的分区）剩余容量至少大于16G </li>
+<li>请一定先看完本文再决定要不要折腾</li>
+<li>对MBR分区表有一定的了解，或者看这里了解一下</li>
+</ul>
+<h2 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h2><p>在开始之前，一定一定一定要备份你现在的sd卡中的全部内容，包括文件、虚拟系统分区和分区表，以备不测。当然，你要是足够自信就当我没说。</p>
+<h2 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h2><ul>
+<li>镜像写入工具 <a href="https://www.balena.io/etcher/" target="_blank" rel="noopener">balenaEtcher</a></li>
+<li>分区工具<ul>
+<li><a href="https://www.eassos.cn/" target="_blank" rel="noopener">Eassos PartitionGuru</a></li>
+<li><a href="https://www.disktool.cn/" target="_blank" rel="noopener">分区助手</a></li>
+</ul>
+</li>
+<li>镜像文件</li>
+</ul>
+<h2 id="制作或移动虚拟系统"><a href="#制作或移动虚拟系统" class="headerlink" title="制作或移动虚拟系统"></a>制作或移动虚拟系统</h2><p>如果你还没有虚拟系统，那就按下面的步骤来从头制作一个，如果已经有了，那就把它移动到sd卡的最后的分区中并修改相关的配置。</p>
+<h3 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h3><p>让我们从头开始，以我手中这张闪迪200G为例，这是张完全空白的卡，只有一个FAT32分区。</p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/空白SD卡.png" alt></p>
+<p>然后我们调整分区</p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/调整分区.png" alt></p>
+<p>前面空出16G或者你需要的大小来存放安卓系统，后面空出32G来存放虚拟系统。</p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/未格式化的分区.png" alt></p>
+<p>用最后32G空间创建一个未格式化分区。</p>
+<h3 id="向sd卡中放入Kosmos文件"><a href="#向sd卡中放入Kosmos文件" class="headerlink" title="向sd卡中放入Kosmos文件"></a>向sd卡中放入Kosmos文件</h3><p>![](<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/https://raw.githubusercontent.com/mk014/pic/master/blog/" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/https://raw.githubusercontent.com/mk014/pic/master/blog/</a></p>
+<p><img src="C:\Users\https://raw.githubusercontent.com/mk014/https://raw.githubusercontent.com/mk014/pic/master/blog/Users\MK\Picturhttps://raw.githubusercontent.com/mk014/pic/master/blog/Users\MK\Pictures\vhd\03.bmp" alt></p>
+<p><img src="/.com//Users\MK\Pictures\vhd\04.bmp" alt="04"></p>
+<h2 id="写入安卓镜像"><a href="#写入安卓镜像" class="headerlink" title="写入安卓镜像"></a>写入安卓镜像</h2><h3 id="下载镜像文件"><a href="#下载镜像文件" class="headerlink" title="下载镜像文件"></a>下载镜像文件</h3><p>有16G、32G、64G等等，依据你的需要来选择，越大，你的安卓系统的容量也就越大，当然同时你的fat分区也就越小。</p>
+<h3 id="创建虚拟硬盘"><a href="#创建虚拟硬盘" class="headerlink" title="创建虚拟硬盘"></a>创建虚拟硬盘</h3><p>这步我<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/这个虚拟的硬盘中去。" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/这个虚拟的硬盘中去。</a></p>
+<p>右键<strong>我的电脑</strong>，选择<strong>管理</strong></p>
+<p><img src="C:\Ushttps://raw.githubusercontent.com/mk014/pic/master/blog/g" alt></p>
+<p>右侧找到<strong>磁盘管理</strong>，再右键选择<strong>创建VHD</strong></p>
+<p>![](C:\Users\MK\P<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/置随意指定，推荐用固态硬盘，速度快。大小就是你下载的镜像的大小" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/置随意指定，推荐用固态硬盘，速度快。大小就是你下载的镜像的大小</a></p>
+<p><img src="/.com//Users\MK\Pictures\vhd\vhd参数.png" alt></p>
+<p>完成后会在左侧看到你新添加的虚拟硬盘。</p>
+<h3 id="写入镜像"><a href="#写入镜像" class="headerlink" title="写入镜像"></a>写入镜像</h3><p>打开Etcher，选择你的下载的镜像文件，再选择你刚刚创建的虚拟硬盘，把镜像写入硬盘吧，这里我镜像和虚拟硬盘文件同时放在固态里，总计时间不超过3分钟。</p>
+<h3 id="https-raw-githubusercontent-com-mk014-pic-master-blog-Eassos-PartitionGuru，选择工具，扇区复制。"><a href="#https-raw-githubusercontent-com-mk014-pic-master-blog-Eassos-PartitionGuru，选择工具，扇区复制。" class="headerlink" title="https://raw.githubusercontent.com/mk014/pic/master/blog/Eassos PartitionGuru，选择工具，扇区复制。"></a><a href="https://raw.githubusercontent.com/mk014/pic/master/blog/Eassos" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/Eassos</a> PartitionGuru，选择工具，扇区复制。</h3><p><img src="/.com//Users\MK\Pictures\vhd\扇区复制2.png" alt></p>
+<p>源盘选择我们刚刚做好的虚拟硬盘，目标盘就是SD卡</p>
+<p><strong>一定要知道你现在在做什么，会覆盖哪些数据</strong></p>
+<p><strong>注意，这里一定要选择参数设置，起始扇区都选择1，这是为了保存我们原先的分区表，防止覆盖分区表。复制扇区数我们手动减1就好。</strong></p>
+<p>复制完成后，SD卡会处于<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/区的GPT分区表头" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/区的GPT分区表头</a></p>
+<h3 id="修改分区表"><a href="#修改分区表" class="headerlink" title="修改分区表"></a>修改分区表</h3><p>先看看现在的分区表</p>
+<p><img src="/.com//Users\MK\Pictures\vhd\原先分区表.png" alt></p>
+<p>红色部分是fat32分区的一行记录</p>
+<p>将其中的分区类型由0C或者0B（分区工具不同，这里可能不同）改成EE</p>
+<p>绿色部分是虚拟系统的分区，不用动它。<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/200EE20200001000000FF070000" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/200EE20200001000000FF070000</a></p>
+<p>如下</p>
+<p><img src="/.com//Users\MK\Pictures\vhd\修改后.png" alt></p>
+<p>这时你的sd卡就恢复正常了。</p>
+<p>别忘了按Ctrl + S<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/s" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/s</a> PartitionGuru中，可以直接看到虚拟硬盘中的文件</p>
+<p><a href="https://raw.githubusercontent.com/mk014/pic/master/blog/vhd\引导文件.png" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/vhd\引导文件.png</a>)</p>
+<p>将其复制到你SD卡的fat分区中</p>
+<p><img src="/.com//Users\MK\Pictures\vhd\文件.png" alt></p>
+<h3 id="开机，折腾"><a href="#开机，折腾" class="headerlink" title="开机，折腾"></a>开机，折腾</h3><p>和往常一样，短接，注入，依次选择moreConfig，Switchroot An<a href="https://raw.githubusercontent.com/mk014/pic/master/blog/，可能和sd的不同有关，我的闪迪200G要差不多要黑屏20S。" target="_blank" rel="noopener">https://raw.githubusercontent.com/mk014/pic/master/blog/，可能和sd的不同有关，我的闪迪200G要差不多要黑屏20S。</a></p>
+<p><img src="/.com//Users\MK\Pictures\vhd\an.bmp" alt></p>
+<h2 id="完工"><a href="#完工" class="headerlink" title="完工"></a>完工</h2><p>以后你只要注入，真实、虚拟、安卓一张SD卡随意切换了。</p>
+</div></article><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/switch/">switch</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2019/07/28/MBR与GPT/"><span>MBR与GPT</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
+  clientID: 'e94bf9b4e03a31e9bc6f',
+  clientSecret: '3b7cc7b3904a5506d84eb94dac8e7198084f8765',
+  repo: 'mk014.github.io',
+  owner: 'mk014',
+  admin: 'mk014',
+  id: md5(decodeURI(location.pathname)),
+  language: 'zh-CN'
+})
+gitalk.render('gitalk-container')</script></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2019 By MK</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+    processEscapes: true,
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+  },
+  CommonHTML: {
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "HTML-CSS": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  },
+  "SVG": { 
+    linebreaks: { automatic: true, width: "90% container" }
+  }
+});
+</script><script type="text/x-mathjax-config">MathJax.Hub.Queue(function() {
+  var all = MathJax.Hub.getAllJax(), i;
+  for (i=0; i < all.length; i += 1) {
+    all[i].SourceElement().parentNode.className += ' has-jax';
+  }
+});
+</script><script src="https://cdn.jsdelivr.net/npm/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/Epsilon2.1.model.json"},"display":{"superSample":2,"width":210,"height":420,"position":"right","hOffset":0,"vOffset":-20},"log":false,"tagMode":false});</script></body></html>
