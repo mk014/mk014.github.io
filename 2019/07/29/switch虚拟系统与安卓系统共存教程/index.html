@@ -46,34 +46,34 @@
 <p>右侧找到<strong>磁盘管理</strong>，再右键选择<strong>创建VHD</strong></p>
 <p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/vhd参数.png" alt></p>
 <p>位置随意指定，推荐用固态硬盘，速度快。大小就是你下载的镜像的大小</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\vhd参数.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/vhd参数.png" alt></p>
 <p>完成后会在左侧看到你新添加的虚拟硬盘。</p>
 <h3 id="写入镜像"><a href="#写入镜像" class="headerlink" title="写入镜像"></a>写入镜像</h3><p>打开Etcher，选择你的下载的镜像文件，再选择你刚刚创建的虚拟硬盘，把镜像写入硬盘吧，这里我镜像和虚拟硬盘文件同时放在固态里，总计时间不超过3分钟。</p>
 <h3 id="扇区复制"><a href="#扇区复制" class="headerlink" title="扇区复制"></a>扇区复制</h3><p>打开PartitionGuru，选择工具，扇区复制。</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\扇区复制2.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/扇区复制2.png" alt></p>
 <p>源盘选择我们刚刚做好的虚拟硬盘，目标盘就是SD卡</p>
 <p><strong>一定要知道你现在在做什么，会覆盖哪些数据</strong></p>
 <p><strong>注意，这里一定要选择参数设置，起始扇区都选择1，这是为了保存我们原先的分区表，防止覆盖分区表。复制扇区数我们手动减1就好。</strong></p>
 <p>复制完成后，SD卡会处于不能使用的状态。</p>
 <p>我猜是因为window读取到了第二扇区的GPT分区表头</p>
 <h3 id="修改分区表"><a href="#修改分区表" class="headerlink" title="修改分区表"></a>修改分区表</h3><p>先看看现在的分区表</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\原先分区表.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/原先分区表.png" alt></p>
 <p>红色部分是fat32分区的一行记录</p>
 <p>将其中的分区类型由0C或者0B（分区工具不同，这里可能不同）改成EE</p>
 <p>绿色部分是虚拟系统的分区，不用动它。</p>
 <p>在下面再添加一条保护性MBR分区记录</p>
 <p>200EE20200001000000FF070000</p>
 <p>如下</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\修改后.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/修改后.png" alt></p>
 <p>这时你的sd卡就恢复正常了。</p>
 <p>别忘了按Ctrl + S保存</p>
 <h3 id="放入安卓引导文件"><a href="#放入安卓引导文件" class="headerlink" title="放入安卓引导文件"></a>放入安卓引导文件</h3><p> 在PartitionGuru中，可以直接看到虚拟硬盘中的文件</p>
 <p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/引导文件.png" alt></p>
 <p>将其复制到你SD卡的fat分区中</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\文件.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/文件.png" alt></p>
 <h3 id="开机，折腾"><a href="#开机，折腾" class="headerlink" title="开机，折腾"></a>开机，折腾</h3><p>和往常一样，短接，注入，依次选择moreConfig，Switchroot Android</p>
 <p>第一次开机很慢，可能和sd的不同有关，我的闪迪200G要差不多要黑屏20S。</p>
-<p><img src="/.com//Users\MK\Pictures\vhd\an.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/mk014/pic/master/blog/an.png" alt></p>
 <h2 id="完工"><a href="#完工" class="headerlink" title="完工"></a>完工</h2><p>以后你只要注入，真实、虚拟、安卓一张SD卡随意切换了。</p>
 </div></article><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/switch/">switch</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2019/07/28/MBR与GPT/"><span>MBR与GPT</span><i class="fa fa-chevron-right"></i></a></div></nav><div id="gitalk-container"></div><script>var gitalk = new Gitalk({
   clientID: 'e94bf9b4e03a31e9bc6f',
